@@ -1,3 +1,10 @@
+# 1.0.0 (2025-09-22)
+
+
+### Bug Fixes
+
+* **deps:** update cir-ml.chp.belastingdienst.nl/cog-public/cog-base-ubi8-minimal-python-311 docker tag to v2.0.43 c0b2afe
+
 ## 1.0.2 (2025-07-09)
 
 

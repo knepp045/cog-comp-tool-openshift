@@ -14,8 +14,8 @@ class Settings(BaseSettings):
     """
 
     # App settings
-    app_name: str = "afko"
-    description: str = "Retrieves the meaning of acronyms"
+    app_name: str = "cog-openshift"
+    description: str = "Expose MCP tools backed by OpenShift APIs"
 
     # CORS
     cors_allow_origins: tuple = ("*",)  # only accessible through local network anyway
@@ -25,16 +25,18 @@ class Settings(BaseSettings):
     api_keys: tuple[str, ...] | None = None
     authorized_groups: tuple[str, ...] | None = None
 
-    # OAuth configuration for Bitbucket
-    bitbucket_client_id: str | None = None
-    bitbucket_client_secret: str | None = None
-    bitbucket_authorize_url: str | None = None
-    bitbucket_token_url: str | None = None
-    bitbucket_redirect_uri: str | None = None
-    bitbucket_oauth_scope: str | None = None
+    # OAuth configuration for OpenShift
+    openshift_client_id: str | None = None
+    openshift_client_secret: str | None = None
+    openshift_authorize_url: str | None = None
+    openshift_token_url: str | None = None
+    openshift_redirect_uri: str | None = None
+    openshift_oauth_scope: str | None = None
 
-    # Bitbucket
-    bitbucket_host: str | None = None
+    # OpenShift API
+    openshift_api_url: str = "https://openshift.default.svc"
+    openshift_verify_ssl: bool = True
+    openshift_ca_bundle: str | None = None
 
     # logging
     log_level: int = logging.INFO  # 20: info, 10: debug
@@ -47,11 +49,23 @@ class Settings(BaseSettings):
         if not (
             m.api_keys
             or m.authorized_groups
-            or (m.bitbucket_client_id and m.bitbucket_client_secret)
+            or (m.openshift_client_id and m.openshift_client_secret)
         ):
             raise ValueError(
                 "You have to configure an api key, authorized groups or OAuth credentials"
             )
+
+        if m.openshift_client_id and not (
+            m.openshift_authorize_url
+            and m.openshift_token_url
+            and m.openshift_redirect_uri
+        ):
+            raise ValueError(
+                "OpenShift OAuth requires authorize, token and redirect URLs to be configured"
+            )
+
+        if not m.openshift_api_url:
+            raise ValueError("The OpenShift API URL must be configured")
 
         return m
 

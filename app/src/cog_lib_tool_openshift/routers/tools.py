@@ -1,14 +1,17 @@
 from fastapi import APIRouter, Depends
 
-from cog_lib_tool_atlassian.auth import get_api_key
-from cog_lib_tool_atlassian.tools.bitbucket import search_code
+from ..auth import get_api_key
+from ..tools.openshift import list_namespaces
 
 tools_router = APIRouter(tags=["tools"], prefix="/tools")
 
 
-@tools_router.post(
-    "/search", operation_id="Search Bitbucket code", status_code=200
+@tools_router.get(
+    "/namespaces",
+    operation_id="List OpenShift namespaces",
+    status_code=200,
 )
-def search(query: str, token: str = Depends(get_api_key)) -> dict:
-    """Search Bitbucket for code snippets."""
-    return search_code(query, token)
+def get_namespaces(token: str = Depends(get_api_key)) -> dict:
+    """Return the available OpenShift namespaces for the authenticated user."""
+
+    return list_namespaces(token)

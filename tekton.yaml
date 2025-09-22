@@ -1,0 +1,2 @@
+image-registry: cir-ml.chp.belastingdienst.nl
+image-repo: 'cog-public/cog-comp-tool-atlassian'

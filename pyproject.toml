@@ -8,7 +8,7 @@ name = "cog-lib-tool-afko"
 version = "0.1.0"
 authors = [{name = "CoE Cognitieve Oplossingen", email = "info@belastingdienst.nl"}]
 license = {text = "Belastingdienst"}
-description = """Retrieves the meaning of acronyms"""
+description = """MCP toolserver providing access to OpenShift APIs"""
 readme = "README.md"
 requires-python = "~=3.11"
 dependencies = ["fastmcp>=2.3.3, <3", "pydantic<3", "fastapi<1", "requests<3", "beautifulsoup4<5"]

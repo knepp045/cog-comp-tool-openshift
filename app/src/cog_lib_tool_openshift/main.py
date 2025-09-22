@@ -1,9 +1,9 @@
 import logging
 
-from cog_lib_tool_atlassian.routers.health import health_router
-from cog_lib_tool_atlassian.routers.oauth import oauth_router
-from cog_lib_tool_atlassian.routers.tools import tools_router
-from cog_lib_tool_atlassian.settings import get_settings
+from .routers.health import health_router
+from .routers.oauth import oauth_router
+from .routers.tools import tools_router
+from .settings import get_settings
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastmcp import FastMCP

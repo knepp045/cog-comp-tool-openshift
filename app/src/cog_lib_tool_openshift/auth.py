@@ -7,7 +7,7 @@ from typing import Dict
 from fastapi import HTTPException, Security, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
-from cog_lib_tool_atlassian.settings import get_settings
+from .settings import get_settings
 
 # In-memory token store keyed by access token
 _token_store: Dict[str, dict] = {}

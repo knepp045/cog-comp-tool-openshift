@@ -1,3 +1,10 @@
+## 1.0.2 (2025-09-24)
+
+
+### Bug Fixes
+
+* **deps:** lock file maintenance 7ff26c6
+
 ## 1.0.1 (2025-09-22)
 
 

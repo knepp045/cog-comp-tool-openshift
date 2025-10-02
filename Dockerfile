@@ -1,4 +1,4 @@
-FROM cir-ml.chp.belastingdienst.nl/cog-public/cog-base-ubi8-minimal-python-311:2.0.43
+FROM cir-ml.chp.belastingdienst.nl/cog-public/cog-base-ubi8-minimal-python-311:2.0.44
 
 ENV APP_NAME="afko"
 ENV UVICORN_ENTRYPOINT="app.src.cog_lib_tool_afko.main:app"

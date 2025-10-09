@@ -1,13 +1,12 @@
 from __future__ import annotations
 
-"""OAuth endpoints for OpenShift authentication."""
+import urllib.parse
 
 import requests
 from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import RedirectResponse
 
-from ..auth import store_token
-from ..settings import get_settings
+from cog_lib_tool_openshift.settings import get_settings
 
 oauth_router = APIRouter(prefix="/oauth", tags=["oauth"])
 
@@ -38,7 +37,7 @@ def login() -> RedirectResponse:
 
 
 @oauth_router.get("/callback")
-def callback(request: Request) -> dict:
+def callback(request: Request):
     """Handle OAuth callback and exchange code for an access token."""
     settings = get_settings()
     code = request.query_params.get("code")
@@ -59,11 +58,22 @@ def callback(request: Request) -> dict:
         "client_id": settings.openshift_client_id,
         "client_secret": settings.openshift_client_secret,
     }
+
     verify = settings.openshift_ca_bundle or settings.openshift_verify_ssl
     resp = requests.post(settings.openshift_token_url, data=data, verify=verify)
     if resp.status_code != 200:
-        raise HTTPException(status_code=resp.status_code, detail="Failed to fetch token")
+        raise HTTPException(
+            status_code=resp.status_code, detail="Failed to fetch token"
+        )
 
-    token = resp.json()
-    store_token(token)
-    return {"access_token": token.get("access_token")}
+    token = resp.json()["access_token"]
+
+    # Safely encode query parameters
+    query = urllib.parse.urlencode({"server": "openshift", "token": token})
+
+    redirect_url = (
+        "https://knepe00-personal-devspace-code-redirect-2.apps.ml02.chp.belastingdienst.nl"
+        f"/store-token?{query}"
+    )
+
+    return RedirectResponse(url=redirect_url)

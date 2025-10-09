@@ -2,9 +2,13 @@
 
 from __future__ import annotations
 
+import logging
+
 import requests
 
 from ..settings import get_settings
+
+logger = logging.getLogger(__name__)
 
 
 def _build_api_url(*parts: str) -> str:
@@ -17,8 +21,11 @@ def _build_api_url(*parts: str) -> str:
 def list_namespaces(token: str) -> dict:
     """Return the namespaces the authenticated user can list."""
 
+    logger.info("Executing list_namespaces")
+    logger.info(f"Token: {token}")
+
     settings = get_settings()
-    url = _build_api_url("api", "v1", "namespaces")
+    url = _build_api_url("apis", "project.openshift.io", "v1", "projects")
     headers = {"Authorization": f"Bearer {token}"}
     if settings.openshift_ca_bundle:
         verify = settings.openshift_ca_bundle
@@ -26,8 +33,15 @@ def list_namespaces(token: str) -> dict:
         verify = settings.openshift_verify_ssl
 
     response = requests.get(url, headers=headers, verify=verify)
-    response.raise_for_status()
+    if response.status_code == 401:
+        return {
+            "error": "Not logged in, point the user to https://knepe00-personal-devspace-code-redirect-3.apps.ml02.chp.belastingdienst.nl/oauth/login"
+        }
     payload = response.json()
     items = payload.get("items", [])
-    namespaces = [item.get("metadata", {}).get("name") for item in items if item.get("metadata", {}).get("name")]
+    namespaces = [
+        item.get("metadata", {}).get("name")
+        for item in items
+        if item.get("metadata", {}).get("name")
+    ]
     return {"namespaces": namespaces, "raw": payload}
